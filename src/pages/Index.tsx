@@ -4,13 +4,11 @@ import { useToast } from "@/hooks/use-toast";
 import DoctorCard from "@/components/DoctorCard";
 import DateSelector from "@/components/DateSelector";
 import TimeSlots from "@/components/TimeSlots";
-import PaymentOption from "@/components/PaymentOption";
 import BookingSummary from "@/components/BookingSummary";
 
 const Index = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState("apple");
   const { toast } = useToast();
 
   const handleConfirm = () => {
@@ -43,7 +41,6 @@ const Index = () => {
 
             {/* Right column */}
             <div className="mt-6 lg:mt-0 space-y-6">
-              <PaymentOption selected={paymentMethod} onSelect={setPaymentMethod} />
               <BookingSummary
                 date={selectedDate}
                 time={selectedTime}
