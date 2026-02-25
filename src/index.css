@@ -13,11 +13,11 @@
     --popover: 0 0% 100%;
     --popover-foreground: 210 25% 12%;
 
-    --primary: 197 71% 52%;
+    --primary: 342 93% 31%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 197 40% 94%;
-    --secondary-foreground: 197 71% 35%;
+    --secondary: 342 30% 94%;
+    --secondary-foreground: 342 93% 25%;
 
     --muted: 210 20% 95%;
     --muted-foreground: 210 10% 50%;
@@ -30,7 +30,7 @@
 
     --border: 200 20% 90%;
     --input: 200 20% 90%;
-    --ring: 197 71% 52%;
+    --ring: 342 93% 31%;
 
     --radius: 0.75rem;
 
@@ -51,10 +51,10 @@
     --card-foreground: 0 0% 95%;
     --popover: 210 25% 11%;
     --popover-foreground: 0 0% 95%;
-    --primary: 197 71% 52%;
+    --primary: 342 93% 31%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 197 30% 18%;
-    --secondary-foreground: 197 40% 80%;
+    --secondary: 342 30% 18%;
+    --secondary-foreground: 342 40% 80%;
     --muted: 210 20% 16%;
     --muted-foreground: 210 10% 60%;
     --accent: 170 60% 40%;
@@ -63,7 +63,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 210 20% 18%;
     --input: 210 20% 18%;
-    --ring: 197 71% 52%;
+    --ring: 342 93% 31%;
   }
 }
 
@@ -80,6 +80,6 @@
 
 @layer utilities {
   .gradient-teal {
-    background: linear-gradient(135deg, hsl(180 40% 92%) 0%, hsl(197 50% 92%) 50%, hsl(210 40% 95%) 100%);
+    background: linear-gradient(135deg, hsl(342 30% 95%) 0%, hsl(342 40% 93%) 50%, hsl(350 30% 96%) 100%);
   }
 }
