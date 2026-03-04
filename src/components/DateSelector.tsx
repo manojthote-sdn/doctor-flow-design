@@ -11,7 +11,7 @@ import {
   isSameMonth,
   getDay,
 } from "date-fns";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
 
 type ViewMode = "day" | "week" | "month";
 
@@ -50,7 +50,7 @@ const DateSelector = ({
   const getMonthDays = () => {
     const monthEnd = endOfMonth(monthStart);
     const startDay = getDay(monthStart);
-    const adjustedStart = startDay === 0 ? 6 : startDay - 1; // Monday-based
+    const adjustedStart = startDay === 0 ? 6 : startDay - 1;
     const totalDays = monthEnd.getDate();
     const cells: (Date | null)[] = [];
 
@@ -62,102 +62,79 @@ const DateSelector = ({
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-foreground">Select Date</h3>
-        <CalendarDays className="h-5 w-5 text-primary" />
+    <div className="date-selector">
+      <div className="date-selector__header">
+        <h3 className="date-selector__title">Select Date</h3>
+        <CalendarDays className="date-selector__icon" />
       </div>
 
-      <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
-        <TabsList className="w-full">
-          <TabsTrigger value="day" className="flex-1">Day</TabsTrigger>
-          <TabsTrigger value="week" className="flex-1">Week</TabsTrigger>
-          <TabsTrigger value="month" className="flex-1">Month</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <TabsPrimitive.Root value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
+        <TabsPrimitive.List className="tabs-list">
+          <TabsPrimitive.Trigger value="day" className="tab-trigger">Day</TabsPrimitive.Trigger>
+          <TabsPrimitive.Trigger value="week" className="tab-trigger">Week</TabsPrimitive.Trigger>
+          <TabsPrimitive.Trigger value="month" className="tab-trigger">Month</TabsPrimitive.Trigger>
+        </TabsPrimitive.List>
+      </TabsPrimitive.Root>
 
-      <div className="flex items-center justify-between">
-        <button
-          onClick={handlePrev}
-          className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary transition-colors"
-        >
-          <ChevronLeft className="h-4 w-4" />
+      <div className="date-nav">
+        <button onClick={handlePrev} className="date-nav__btn">
+          <ChevronLeft />
         </button>
-        <span className="text-sm font-medium text-foreground">{getHeaderLabel()}</span>
-        <button
-          onClick={handleNext}
-          className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary transition-colors"
-        >
-          <ChevronRight className="h-4 w-4" />
+        <span className="date-nav__label">{getHeaderLabel()}</span>
+        <button onClick={handleNext} className="date-nav__btn">
+          <ChevronRight />
         </button>
       </div>
 
       {/* Day View */}
       {viewMode === "day" && (
-        <div className="flex justify-center">
+        <div className="day-view">
           <button
             onClick={() => onSelect(currentDay)}
-            className={`flex flex-col items-center gap-2 rounded-xl py-6 px-10 text-center transition-all duration-200 ${
-              isSameDay(currentDay, selectedDate)
-                ? "bg-primary text-primary-foreground shadow-md"
-                : "bg-card text-foreground hover:bg-secondary border border-border"
-            }`}
+            className={`day-card ${isSameDay(currentDay, selectedDate) ? "day-card--selected" : ""}`}
           >
-            <span className="text-3xl font-bold">{format(currentDay, "d")}</span>
-            <span className="text-sm uppercase tracking-wide opacity-80">
-              {format(currentDay, "EEEE")}
-            </span>
+            <span className="day-card__number">{format(currentDay, "d")}</span>
+            <span className="day-card__name">{format(currentDay, "EEEE")}</span>
           </button>
         </div>
       )}
 
       {/* Week View */}
       {viewMode === "week" && (
-        <div className="grid grid-cols-7 gap-2">
-          {weekDays.map((day) => {
-            const isSelected = isSameDay(day, selectedDate);
-            return (
-              <button
-                key={day.toISOString()}
-                onClick={() => onSelect(day)}
-                className={`flex flex-col items-center gap-1 rounded-xl py-2.5 px-1 text-center transition-all duration-200 ${
-                  isSelected
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "bg-card text-foreground hover:bg-secondary border border-border"
-                }`}
-              >
-                <span className="text-base font-semibold">{format(day, "d")}</span>
-                <span className="text-[10px] uppercase tracking-wide opacity-80">
-                  {format(day, "EEE")}
-                </span>
-              </button>
-            );
-          })}
+        <div className="week-grid">
+          {weekDays.map((day) => (
+            <button
+              key={day.toISOString()}
+              onClick={() => onSelect(day)}
+              className={`week-day ${isSameDay(day, selectedDate) ? "week-day--selected" : ""}`}
+            >
+              <span className="week-day__number">{format(day, "d")}</span>
+              <span className="week-day__name">{format(day, "EEE")}</span>
+            </button>
+          ))}
         </div>
       )}
 
       {/* Month View */}
       {viewMode === "month" && (
         <div>
-          <div className="grid grid-cols-7 gap-1 mb-2">
+          <div className="month-header">
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-              <span key={d} className="text-[10px] text-center uppercase text-muted-foreground font-medium py-1">
-                {d}
-              </span>
+              <span key={d} className="month-header__day">{d}</span>
             ))}
           </div>
-          <div className="grid grid-cols-7 gap-1">
+          <div className="month-grid">
             {getMonthDays().map((day, i) =>
               day ? (
                 <button
                   key={day.toISOString()}
                   onClick={() => onSelect(day)}
-                  className={`rounded-lg py-2 text-sm font-medium transition-all duration-200 ${
+                  className={`month-day ${
                     isSameDay(day, selectedDate)
-                      ? "bg-primary text-primary-foreground shadow-md"
+                      ? "month-day--selected"
                       : !isSameMonth(day, monthStart)
-                        ? "text-muted-foreground opacity-40"
-                        : "text-foreground hover:bg-secondary"
+                        ? "month-day--other-month"
+                        : ""
                   }`}
                 >
                   {format(day, "d")}

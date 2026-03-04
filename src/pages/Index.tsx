@@ -19,28 +19,26 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen gradient-teal">
-      <div className="mx-auto max-w-lg lg:max-w-4xl">
+    <div className="page-wrapper gradient-teal">
+      <div className="page-container">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center gap-3 bg-background/80 backdrop-blur-md px-4 py-4 lg:px-6">
-          <button className="rounded-lg p-2 hover:bg-secondary transition-colors">
-            <ChevronLeft className="h-5 w-5 text-foreground" />
+        <div className="header">
+          <button className="header__back-btn">
+            <ChevronLeft />
           </button>
-          <h1 className="text-xl font-bold text-foreground">Appointment</h1>
+          <h1 className="header__title">Appointment</h1>
         </div>
 
         {/* Content */}
-        <div className="px-4 pb-8 lg:px-6">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-8">
-            {/* Left column */}
-            <div className="space-y-6">
+        <div className="content">
+          <div className="content__grid">
+            <div className="content__left">
               <DoctorCard />
               <DateSelector selectedDate={selectedDate} onSelect={setSelectedDate} />
               <TimeSlots selectedTime={selectedTime} onSelect={setSelectedTime} />
             </div>
 
-            {/* Right column */}
-            <div className="mt-6 lg:mt-0 space-y-6">
+            <div className="content__right">
               <BookingSummary
                 date={selectedDate}
                 time={selectedTime}
