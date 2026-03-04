@@ -35,7 +35,12 @@ const Index = () => {
             {/* Left column */}
             <div className="space-y-6">
               <DoctorCard />
-              <DateSelector selectedDate={selectedDate} onSelect={setSelectedDate} />
+              <DateSelector
+                selectedDate={selectedDate}
+                onSelect={setSelectedDate}
+                selectedTime={selectedTime}
+                onSelectTime={(time) => setSelectedTime(time)}
+              />
               <TimeSlots selectedTime={selectedTime} onSelect={setSelectedTime} />
             </div>
 

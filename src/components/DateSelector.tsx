@@ -15,12 +15,21 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ViewMode = "day" | "week" | "month";
 
+const TIME_SLOTS = [
+  "09:00", "10:00", "11:00", "12:00", "13:00",
+  "14:00", "15:00", "16:00", "17:00", "18:00",
+];
+
 const DateSelector = ({
   selectedDate,
   onSelect,
+  selectedTime,
+  onSelectTime,
 }: {
   selectedDate: Date;
   onSelect: (date: Date) => void;
+  selectedTime: string | null;
+  onSelectTime: (time: string, date: Date) => void;
 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>("week");
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date(), { weekStartsOn: 1 }));
@@ -50,10 +59,9 @@ const DateSelector = ({
   const getMonthDays = () => {
     const monthEnd = endOfMonth(monthStart);
     const startDay = getDay(monthStart);
-    const adjustedStart = startDay === 0 ? 6 : startDay - 1; // Monday-based
+    const adjustedStart = startDay === 0 ? 6 : startDay - 1;
     const totalDays = monthEnd.getDate();
     const cells: (Date | null)[] = [];
-
     for (let i = 0; i < adjustedStart; i++) cells.push(null);
     for (let i = 1; i <= totalDays; i++) {
       cells.push(new Date(monthStart.getFullYear(), monthStart.getMonth(), i));
@@ -111,28 +119,62 @@ const DateSelector = ({
         </div>
       )}
 
-      {/* Week View */}
+      {/* Week View - Full schedule grid */}
       {viewMode === "week" && (
-        <div className="grid grid-cols-7 gap-2">
-          {weekDays.map((day) => {
-            const isSelected = isSameDay(day, selectedDate);
-            return (
-              <button
-                key={day.toISOString()}
-                onClick={() => onSelect(day)}
-                className={`flex flex-col items-center gap-1 rounded-xl py-2.5 px-1 text-center transition-all duration-200 ${
-                  isSelected
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "bg-card text-foreground hover:bg-secondary border border-border"
-                }`}
-              >
-                <span className="text-base font-semibold">{format(day, "d")}</span>
-                <span className="text-[10px] uppercase tracking-wide opacity-80">
-                  {format(day, "EEE")}
-                </span>
-              </button>
-            );
-          })}
+        <div className="overflow-x-auto -mx-4 px-4">
+          <div className="min-w-[560px]">
+            {/* Day headers */}
+            <div className="grid grid-cols-[60px_repeat(7,1fr)] gap-1 mb-1">
+              <div />
+              {weekDays.map((day) => (
+                <button
+                  key={day.toISOString()}
+                  onClick={() => onSelect(day)}
+                  className={`flex flex-col items-center gap-0.5 rounded-lg py-1.5 text-center transition-all duration-200 ${
+                    isSameDay(day, selectedDate)
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  <span className="text-[10px] uppercase tracking-wide opacity-70">
+                    {format(day, "EEE")}
+                  </span>
+                  <span className="text-sm font-semibold">{format(day, "d")}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Time slot rows */}
+            <div className="space-y-1">
+              {TIME_SLOTS.map((time) => (
+                <div key={time} className="grid grid-cols-[60px_repeat(7,1fr)] gap-1">
+                  <span className="text-[11px] text-muted-foreground font-medium flex items-center justify-end pr-2">
+                    {time}
+                  </span>
+                  {weekDays.map((day) => {
+                    const isSelected =
+                      isSameDay(day, selectedDate) && selectedTime === time;
+                    return (
+                      <button
+                        key={`${day.toISOString()}-${time}`}
+                        onClick={() => {
+                          onSelect(day);
+                          onSelectTime(time, day);
+                        }}
+                        className={`rounded-md py-1.5 text-[11px] font-medium transition-all duration-150 ${
+                          isSelected
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "bg-card text-foreground hover:bg-secondary border border-border"
+                        }`}
+                      >
+                        {isSelected ? "✓" : ""}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
