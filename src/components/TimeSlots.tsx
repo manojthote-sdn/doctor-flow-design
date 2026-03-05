@@ -12,18 +12,25 @@ const TimeSlots = ({
   onSelect: (time: string) => void;
 }) => {
   return (
-    <div className="time-slots">
-      <h3 className="time-slots__title">Select Time</h3>
-      <div className="time-slots__grid">
-        {TIME_SLOTS.map((time) => (
-          <button
-            key={time}
-            onClick={() => onSelect(time)}
-            className={`time-slot ${time === selectedTime ? "time-slot--selected" : ""}`}
-          >
-            {time}
-          </button>
-        ))}
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold text-foreground">Select Time</h3>
+      <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+        {TIME_SLOTS.map((time) => {
+          const isSelected = time === selectedTime;
+          return (
+            <button
+              key={time}
+              onClick={() => onSelect(time)}
+              className={`rounded-xl py-2.5 text-sm font-medium transition-all duration-200 ${
+                isSelected
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "bg-card text-foreground hover:bg-secondary border border-border"
+              }`}
+            >
+              {time}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
